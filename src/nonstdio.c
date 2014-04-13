@@ -34,7 +34,7 @@ int non_vsnprintf(char* buf, size_t size, const char* fmt, va_list args)
     state_input state = NONE;
     for (; *fmt != '\0' && size > 1; fmt++)
     {
-        if (state == NONE)
+        if (NONE == state)
         {
             if (*fmt == '%')
             {
@@ -47,7 +47,7 @@ int non_vsnprintf(char* buf, size_t size, const char* fmt, va_list args)
                 size--;
             }
         }
-        else if (state == PERCENT)
+        else if (PERCENT == state)
         {
             switch (*fmt)
             {
@@ -56,13 +56,10 @@ int non_vsnprintf(char* buf, size_t size, const char* fmt, va_list args)
                     break;
                 case 'd':
                     /* process integer */
-                    /* TODO check return value of printd and pass
-                     * along number of characters that could be processed
-                     */
-                    printd(&buf, &size, va_arg(args, int));
+                    printf("printd-result: %d\n", printd(&buf, &size, va_arg(args, int)));
                     break;
                 default:
-                    /* conversion specifier unknown */
+                    /* conversion specifier unknown => ignore*/
                     break;
             }
             state = NONE;
@@ -95,5 +92,5 @@ static int printd(char** buf, size_t* size, int number)
         (*size)--;
     }
 
-    return cnt - i - 1;
+    return cnt - 1 - i;
 }
