@@ -8,8 +8,10 @@
 #include <stdlib.h>
 #include <stdio.h>
 
+#include "nonstdio.h"
+
 int main(void)
 {
-    printf("Return value: %d", func("Hello World", 1, 2, 3));
+    printf("Return value: %d", func("Hello World", 1, 2, 3, -1));
     return EXIT_SUCCESS;
 }
