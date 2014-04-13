@@ -17,7 +17,7 @@ int main(void)
     char msg[MAX_STR_LEN] = { '\0' };
 
     /* create our string */
-    non_snprintf(msg, MAX_STR_LEN, "Hello World: %d. ", 1234);
+    non_snprintf(msg, MAX_STR_LEN, "Hello World: %u. ", 3000000000);
 
     /* do something with our newly created string */
     /* in this case we are using stdio just to demonstration that they interact */
