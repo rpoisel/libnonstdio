@@ -3,7 +3,7 @@
 
 #include <stdarg.h>
 
-int non_sprintf(char* buf, const char* fmt, ...);
-int non_vsprintf(char* buf, const char* fmt, va_list args);
+int non_snprintf(char* buf, size_t size, const char* fmt, ...);
+int non_vsnprintf(char* buf, size_t size, const char* fmt, va_list args);
 
 #endif /* __NONSTDIO_H__ */

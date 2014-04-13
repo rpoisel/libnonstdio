@@ -16,23 +16,23 @@ typedef enum
     NONE, PERCENT, STRING, DECIMAL, HEX
 } state_input;
 
-static int printd(char** buf, int number);
+static int printd(char** buf, size_t* size, int number);
 
-int non_sprintf(char* buf, const char* fmt, ...)
+int non_snprintf(char* buf, size_t size, const char* fmt, ...)
 {
     int lReturn = 0;
     va_list arglist;
 
     va_start(arglist, fmt);
-    lReturn = non_vsprintf(buf, fmt, arglist);
+    lReturn = non_vsnprintf(buf, size, fmt, arglist);
     va_end(arglist);
     return lReturn;
 }
 
-int non_vsprintf(char* buf, const char* fmt, va_list args)
+int non_vsnprintf(char* buf, size_t size, const char* fmt, va_list args)
 {
     state_input state = NONE;
-    for (; *fmt != '\0'; fmt++)
+    for (; *fmt != '\0' && size > 1; fmt++)
     {
         if (state == NONE)
         {
@@ -44,6 +44,7 @@ int non_vsprintf(char* buf, const char* fmt, va_list args)
             {
                 *buf = *fmt;
                 buf++;
+                size--;
             }
         }
         else if (state == PERCENT)
@@ -58,7 +59,7 @@ int non_vsprintf(char* buf, const char* fmt, va_list args)
                     /* TODO check return value of printd and pass
                      * along number of characters that could be processed
                      */
-                    printd(&buf, va_arg(args, int));
+                    printd(&buf, &size, va_arg(args, int));
                     break;
                 default:
                     /* conversion specifier unknown */
@@ -67,12 +68,12 @@ int non_vsprintf(char* buf, const char* fmt, va_list args)
             state = NONE;
         }
     }
-    buf = '\0';
+    *buf = '\0';
 
     return 0;
 }
 
-static int printd(char** buf, int number)
+static int printd(char** buf, size_t* size, int number)
 {
     char num_buf[NUM_BUF_LEN] = { '\0' };
     int cnt = 0;
@@ -87,11 +88,12 @@ static int printd(char** buf, int number)
     }
 
     /* write reverse numbers in reverse order into the buffer */
-    for (i = cnt - 1; i >= 0; i--)
+    for (i = cnt - 1; i >= 0 && *size > 1; i--)
     {
         **buf = num_buf[i];
         (*buf)++;
+        (*size)--;
     }
 
-    return cnt;
+    return cnt - i - 1;
 }
