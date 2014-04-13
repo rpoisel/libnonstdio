@@ -32,6 +32,7 @@ int non_snprintf(char* buf, size_t size, const char* fmt, ...)
 int non_vsnprintf(char* buf, size_t size, const char* fmt, va_list args)
 {
     state_input state = NONE;
+    int lReturn = 0;
     for (; *fmt != '\0' && size > 1; fmt++)
     {
         if (NONE == state)
@@ -45,6 +46,7 @@ int non_vsnprintf(char* buf, size_t size, const char* fmt, va_list args)
                 *buf = *fmt;
                 buf++;
                 size--;
+                lReturn++;
             }
         }
         else if (PERCENT == state)
@@ -56,7 +58,7 @@ int non_vsnprintf(char* buf, size_t size, const char* fmt, va_list args)
                     break;
                 case 'd':
                     /* process integer */
-                    printf("printd-result: %d\n", printd(&buf, &size, va_arg(args, int)));
+                    lReturn += printd(&buf, &size, va_arg(args, int));
                     break;
                 default:
                     /* conversion specifier unknown => ignore*/
@@ -66,8 +68,9 @@ int non_vsnprintf(char* buf, size_t size, const char* fmt, va_list args)
         }
     }
     *buf = '\0';
+    lReturn++; /* consider trailing '\0' */
 
-    return 0;
+    return lReturn;
 }
 
 static int printd(char** buf, size_t* size, int number)
