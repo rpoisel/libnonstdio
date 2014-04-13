@@ -1,4 +1,4 @@
-nonstdio
-========
+libnonstdio
+===========
 
-Non stdio with a stdio interface
+Non stdio library with a stdio interface. 
